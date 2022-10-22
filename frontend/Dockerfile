@@ -21,14 +21,9 @@ RUN npm run build
 FROM node:16-alpine AS runner
 WORKDIR /app
 
-ENV API_BASE_URL=http://localhost:8000
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV API_BASE_URL=http://localhost:8080 NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-# You only need to copy next.config.js if you are NOT using the default configuration
+RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
 # COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
@@ -41,7 +36,5 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 USER nextjs
 
 EXPOSE 3000
-
-ENV PORT 3000
 
 CMD ["node", "server.js"]
