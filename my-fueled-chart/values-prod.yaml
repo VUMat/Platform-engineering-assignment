@@ -1,0 +1,25 @@
+# Default values for my-fueled-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+backend:
+  name: backend 
+  image:
+    repository: vumat/fwebserver
+    pullPolicy: Always
+    tag: "latest"
+  replicaCount: 3
+  hpa:
+    memoryaverageValue: "25Mi"
+    cpuaverageUtilization: 40
+
+frontend:
+  image:
+    repository: vumat/fwebfrontend
+    pullPolicy: Always
+    tag: "latest"
+  name: frontend
+  API_BASE_URL: "http://backend-service:8080"
+  hpa:
+    memoryaverageValue: "20Mi"
+    cpuaverageUtilization: 40
