@@ -19,21 +19,13 @@ spec:
       - image: vumat/fwebserver:latest
         imagePullPolicy: Always
         name: backend
+        livenessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 8080
         ports:
           - name: backend-port
             containerPort: 8080
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: backend-service
-spec:
-  selector:
-    app: backend
-  ports:
-  - protocol: TCP
-    port: 8080
-    targetPort: backend-port
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -56,9 +48,29 @@ spec:
       - image: vumat/fwebfrontend:latest
         imagePullPolicy: Always
         name: frontend
+        livenessProbe:
+          httpGet:
+            path: /api/healthcheck
+            port: 3000
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
         env:
         - name: API_BASE_URL
           value: "http://backend-service:8080"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: backend-port
 ---
 apiVersion: v1
 kind: Service
@@ -72,3 +84,53 @@ spec:
     port: 80
     targetPort: 3000
   type: LoadBalancer
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: backend-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: backend
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: AverageValue
+        averageValue: 25Mi
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: frontend-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: frontend
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: AverageValue
+        averageValue: 20Mi
