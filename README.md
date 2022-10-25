@@ -35,8 +35,9 @@
 
 
 ### gotchas: 
-- used internal k8s capabilities to link back and front. Used network multitool container for debugging (http://backend-service:8080)
+- used internal k8s DNS capabilities to link back and front. Used network multitool container for debugging (http://backend-service:8080)
 - used memory and cpu as metric in K8s HPA as it is increasing if you send a few get requests to the frontend
+- terraform workspaces kind of nice, but depending of use case different branch strategy or 3rd party tools might be a better fit.
 
 ### future improvements of the solution: 
 
