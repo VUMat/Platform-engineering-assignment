@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: backend
+  name: backend
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - image: vumat/fwebserver:latest
+        imagePullPolicy: Always
+        name: backend
+        ports:
+          - name: backend-port
+            containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: backend-port
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: frontend
+  name: frontend
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - image: vumat/fwebfrontend:latest
+        imagePullPolicy: Always
+        name: frontend
+        env:
+        - name: API_BASE_URL
+          value: "http://backend-service:8080"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: frontend
+  ports:
+  - protocol: "TCP"
+    port: 80
+    targetPort: 3000
+  type: LoadBalancer
