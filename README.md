@@ -1,7 +1,12 @@
-#### I used GCP+GKE for the task
+# Description
+
+This repo demonstrates script for infrastructure configuration and deployment of the provided apps for a multi-environment setup e.g. development, staging, and production.
 
 
-### Requirenment for script to run: kubectl, gcloud, terraform, helm. (Everything already installed on GCP cloud shell)
+I used GCP+GKE for the task
+### Requirenment for script to run: 
+kubectl, gcloud, terraform, helm. (Everything already installed on GCP cloud shell)
+
 
 > NOTE Compute Engine API and Kubernetes Engine API are required for terraform apply to work on this configuration. Enable both APIs for your Google Cloud project before continuing.
 > Make sure you have bumped you quota for vms if you face some errors related to that 
