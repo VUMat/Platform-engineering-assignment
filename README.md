@@ -1,6 +1,6 @@
 # Description
 
-This repo demonstrates script for infrastructure configuration and deployment of the provided apps for a multi-environment setup e.g. development, staging, and production.
+This repo demonstrates completion of the Platform Engineering Assigment including script for infrastructure configuration and deployment of the provided apps for a multi-environment setup using tools line kubectl, gcloud, terraform, helm.
 
 
 I used GCP+GKE for the task
@@ -12,7 +12,8 @@ kubectl, gcloud, terraform, helm. (Everything already installed on GCP cloud she
 > Make sure you have bumped you quota for vms if you face some errors related to that 
 
 
-## To simply install everything with one script - run run.sh script with cp project id argument and environment name as 2nd arg [dev|stage|prod]:
+## Quick start:
+To simply install everything with one script - run run.sh script with cp project id argument and environment name as 2nd arg [dev|stage|prod]:
 
     run.sh [gcp project id] [dev|stage|prod]
 
